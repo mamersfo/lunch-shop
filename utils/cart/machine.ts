@@ -4,13 +4,14 @@ export type Address = {
     name: string
     'address-line1': string
     'address-line2': string
-    'address-level2': string
     'postal-code': string
+    city: string
 }
 
 export type Context = {
     products: string[]
     shipping?: string
+    address?: Address
     error?: string
 }
 
@@ -30,6 +31,10 @@ export const cartMachine = createMachine(
                 | { type: 'removeFromCart'; product: string }
                 | { type: 'checkout' }
                 | { type: 'continueShopping' }
+                | {
+                      type: 'updateAddress'
+                      address: Address
+                  }
                 | {
                       type: 'updateShipping'
                       method: string
@@ -74,6 +79,17 @@ export const cartMachine = createMachine(
                 on: {
                     continueShopping: {
                         target: 'shopping',
+                    },
+                    updateAddress: {
+                        target: 'checkout',
+                        actions: [
+                            assign({
+                                address: ({ event }) => {
+                                    return event.address
+                                },
+                            }),
+                            'persist',
+                        ],
                     },
                     updateShipping: {
                         target: 'checkout',

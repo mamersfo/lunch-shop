@@ -33,7 +33,7 @@ export default async function Totals({
 
     let chosenMethod: Shipping | null = null
 
-    if (state.context.shipping) {
+    if (state?.context.shipping) {
         chosenMethod = shipping.filter(
             (s) => s.method === state.context.shipping
         )[0]
@@ -61,7 +61,12 @@ export default async function Totals({
                             </td>
                         </tr>
                         <tr>
-                            <td>Shipping:</td>
+                            <td>
+                                <span className='capitalize'>
+                                    {state.context.shipping}
+                                </span>{' '}
+                                delivery:
+                            </td>
                             <td className='text-right'>
                                 <Amount value={shippingFee} />
                             </td>

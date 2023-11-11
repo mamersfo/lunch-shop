@@ -1,6 +1,6 @@
 import { revalidatePath } from 'next/cache'
 import { send } from '@/utils/cart'
-import { type State } from '@/utils/cart/machine'
+import { type Address, State } from '@/utils/cart/machine'
 import { type Shipping } from '@/types'
 
 export default async function Checkout({
@@ -12,17 +12,33 @@ export default async function Checkout({
 }) {
     const updateShipping = async (formData: FormData) => {
         'use server'
-        const method = formData.get('method')
-        await send({ type: 'updateShipping', method })
+
+        const address: Address = {
+            name: formData.get('name') as string,
+            'address-line1': formData.get('address-line1') as string,
+            'address-line2': formData.get('address-line2') as string,
+            'postal-code': formData.get('postal-code') as string,
+            city: formData.get('city') as string,
+        }
+
+        await send({ type: 'updateAddress', address })
+
+        await send({
+            type: 'updateShipping',
+            method: formData.get('method') as string,
+        })
+
         revalidatePath('/cart')
     }
 
     return (
         <div className='w-full'>
-            <div className='flex flex-row gap-4'>
-                <div className='w-full'>
-                    <div className='text-md font-semibold'>Address</div>
-                    <form>
+            <form action={updateShipping}>
+                <div className='flex flex-row gap-4'>
+                    <div className='w-full'>
+                        <div className='text-md font-semibold'>
+                            Shipping address
+                        </div>
                         <div className='form-control w-full'>
                             <label className='label'>
                                 <span className='label-text'>Name</span>
@@ -31,6 +47,8 @@ export default async function Checkout({
                                 type='text'
                                 name='name'
                                 className='input input-bordered w-full max-w-lg'
+                                required
+                                defaultValue={state?.context.address?.name}
                             />
                         </div>
                         <div className='form-control w-full'>
@@ -43,6 +61,10 @@ export default async function Checkout({
                                 type='text'
                                 name='address-line1'
                                 className='input input-bordered w-full max-w-lg'
+                                required
+                                defaultValue={
+                                    state?.context.address?.['address-line1']
+                                }
                             />
                         </div>
                         <div className='form-control w-full'>
@@ -55,6 +77,9 @@ export default async function Checkout({
                                 type='text'
                                 name='address-line2'
                                 className='input input-bordered w-full max-w-lg'
+                                defaultValue={
+                                    state?.context.address?.['address-line2']
+                                }
                             />
                         </div>
                         <div className='form-control w-full'>
@@ -65,6 +90,10 @@ export default async function Checkout({
                                 type='text'
                                 name='postal-code'
                                 className='input input-bordered w-full max-w-lg'
+                                required
+                                defaultValue={
+                                    state?.context.address?.['postal-code']
+                                }
                             />
                         </div>
                         <div className='form-control w-full'>
@@ -73,16 +102,18 @@ export default async function Checkout({
                             </label>
                             <input
                                 type='text'
-                                name='address-level-2'
+                                name='city'
                                 className='input input-bordered w-full max-w-lg'
+                                required
+                                defaultValue={state?.context.address?.city}
                             />
                         </div>
-                    </form>
-                </div>
-                {shipping?.length > 0 && (
-                    <div className='w-full'>
-                        <div className='text-md font-semibold'>Shipping</div>
-                        <form action={updateShipping}>
+                    </div>
+                    {shipping?.length > 0 && (
+                        <div className='w-full'>
+                            <div className='text-md font-semibold'>
+                                Shipping method
+                            </div>
                             {shipping.map((s: Shipping) => (
                                 <div
                                     key={`shipping-${s.id}`}
@@ -107,10 +138,10 @@ export default async function Checkout({
                                 </div>
                             ))}
                             <button className='btn mt-4'>Apply</button>
-                        </form>
-                    </div>
-                )}
-            </div>
+                        </div>
+                    )}
+                </div>
+            </form>
         </div>
     )
 }
