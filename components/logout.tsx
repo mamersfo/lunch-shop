@@ -19,7 +19,7 @@ export default async function Logout() {
     }
     return (
         <form action={signOut}>
-            <button className='cursor-pointer'>Logout</button>
+            <button className='cursor-pointer h-10'>Logout</button>
         </form>
     )
 }
