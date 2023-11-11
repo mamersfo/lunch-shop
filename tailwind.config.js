@@ -4,7 +4,7 @@ module.exports = {
         './app/**/*.{js,ts,jsx,tsx,mdx}',
         './components/**/*.{js,ts,jsx,tsx,mdx}',
     ],
-    plugins: [require('daisyui')],
+    plugins: [require('daisyui'), require('@tailwindcss/typography')],
     daisyui: {
         themes: ['light'],
     },

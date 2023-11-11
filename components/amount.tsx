@@ -1,4 +1,4 @@
-export default function Amount({ value }: { value: number }) {
+export default function Amount({ value }: { value?: number | null }) {
     if (value) {
         return (
             <span className='w-full text-right'>

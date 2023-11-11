@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import Amount from './amount'
+import { type Product } from '@/types'
 
-const ProductCard = (product: any) => {
+const ProductCard = (product: Product) => {
     return (
         <Link
             href={`/shop/${product.slug}`}
@@ -10,8 +11,8 @@ const ProductCard = (product: any) => {
         >
             <figure className='relative h-56'>
                 <Image
-                    src={`http://localhost:54321/storage/v1/object/public/shop/karsten-winegeart-${product.slug}-unsplash-small.jpg`}
-                    alt={product.name}
+                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/shop/karsten-winegeart-${product.slug}-unsplash-small.jpg`}
+                    alt={product.name || '<product.name>'}
                     width={400}
                     height={400}
                     style={{ objectFit: 'cover' }}
@@ -20,20 +21,13 @@ const ProductCard = (product: any) => {
             </figure>
             <div className='card-body'>
                 <h4 className='card-title flex flex-row justify-between'>
-                    <span>
-                        {product.name}
-                        {product.isNew && (
-                            <div className='badge badge-secondary ml-2'>
-                                NEW
-                            </div>
-                        )}
-                    </span>
+                    <span>{product.name}</span>
                     <span>
                         <Amount value={product.price} />
                     </span>
                 </h4>
-                {product.description && (
-                    <p className='text-sm'>{product.description}</p>
+                {product.short_description && (
+                    <p className='text-sm'>{product.short_description}</p>
                 )}
                 {product.tags && (
                     <div className='card-actions justify-end mt-4'>

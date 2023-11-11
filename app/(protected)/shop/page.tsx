@@ -1,11 +1,8 @@
-import { ProductCard, Protected } from '@/components'
-import { createClient } from '@/utils/supabase/server'
-import { cookies } from 'next/headers'
+import { PhotoCredits, ProductCard, Protected } from '@/components'
+import { supabase } from '@/utils/supabase/static'
+import { type Product } from '@/types'
 
 export default async function Shop() {
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
-
     const { data, error } = await supabase.from('products').select()
 
     if (error) {
@@ -15,9 +12,15 @@ export default async function Shop() {
     return (
         <Protected redirectTo='/shop'>
             <div className='flex flex-row flex-wrap gap-4'>
-                {data.map((product, idx) => (
-                    <ProductCard key={`product-card-${idx}`} {...product} />
+                {data.map((d, idx) => (
+                    <ProductCard
+                        key={`product-card-${idx}`}
+                        {...(d as Product)}
+                    />
                 ))}
+            </div>
+            <div className='mt-4'>
+                <PhotoCredits />
             </div>
         </Protected>
     )
