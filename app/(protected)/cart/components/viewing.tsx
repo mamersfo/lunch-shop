@@ -82,8 +82,6 @@ export default async function Viewing({
                         </div>
                     </div>
                 ))}
-                {/* <MoveToShippingButton />
-                <ContinueShoppingButton /> */}
             </div>
         )
     }
@@ -91,7 +89,6 @@ export default async function Viewing({
     return (
         <>
             <div>Your shopping cart is empty</div>
-            {/* <ContinueShoppingButton /> */}
         </>
     )
 }

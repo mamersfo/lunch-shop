@@ -22,31 +22,30 @@ export default function Totals({
             <div className='text-center'>
                 <div className='text-lg'>Cart Total</div>
                 <div className='text-2xl font-semibold'>
-                    <Amount value={subTotal + shippingFee} />
+                    <Amount value={subTotal ? +subTotal + shippingFee : 0} />
                 </div>
             </div>
-            <table className='table'>
-                <tbody>
-                    <tr>
-                        <td>Amount:</td>
-                        <td className='text-right'>
-                            <Amount value={subTotal} />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Shipping:</td>
-                        <td className='text-right'>
-                            <Amount value={shippingFee} />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            {subTotal > 0 && (
+                <table className='table'>
+                    <tbody>
+                        <tr>
+                            <td>Amount:</td>
+                            <td className='text-right'>
+                                <Amount value={subTotal} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Shipping:</td>
+                            <td className='text-right'>
+                                <Amount value={shippingFee} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            )}
             <Link href='/shop' className='btn btn-outline w-full mt-8'>
                 Back to shop
             </Link>
-            {/* <div className='text-center'>
-                {!state.matches('viewing') && <ViewCartButton />}
-            </div> */}
         </div>
     )
 }
