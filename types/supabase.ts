@@ -82,6 +82,7 @@ export interface Database {
       shipping: {
         Row: {
           id: number
+          is_default: boolean
           max_days: number
           method: string
           min_days: number
@@ -89,6 +90,7 @@ export interface Database {
         }
         Insert: {
           id?: number
+          is_default?: boolean
           max_days: number
           method: string
           min_days: number
@@ -96,6 +98,7 @@ export interface Database {
         }
         Update: {
           id?: number
+          is_default?: boolean
           max_days?: number
           method?: string
           min_days?: number

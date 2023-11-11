@@ -1,4 +1,5 @@
+import Checkout from './checkout'
 import Totals from './totals'
 import Viewing from './viewing'
 
-export { Totals, Viewing }
+export { Checkout, Totals, Viewing }

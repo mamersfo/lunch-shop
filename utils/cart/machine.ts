@@ -1,7 +1,16 @@
 import { assign, createMachine } from 'xstate'
 
+export type Address = {
+    name: string
+    'address-line1': string
+    'address-line2': string
+    'address-level2': string
+    'postal-code': string
+}
+
 export type Context = {
     products: string[]
+    shipping?: string
     error?: string
 }
 
@@ -21,6 +30,10 @@ export const cartMachine = createMachine(
                 | { type: 'removeFromCart'; product: string }
                 | { type: 'checkout' }
                 | { type: 'continueShopping' }
+                | {
+                      type: 'updateShipping'
+                      method: string
+                  }
         },
         context: {
             products: [],
@@ -61,6 +74,14 @@ export const cartMachine = createMachine(
                 on: {
                     continueShopping: {
                         target: 'shopping',
+                    },
+                    updateShipping: {
+                        target: 'checkout',
+                        actions: [
+                            assign({
+                                shipping: ({ event }) => event.method,
+                            }),
+                        ],
                     },
                 },
             },

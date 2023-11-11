@@ -1,21 +1,47 @@
-import Link from 'next/link'
+import { revalidatePath } from 'next/cache'
 import { Amount } from '@/components'
-import { LineItem } from '@/types'
+import { LineItem, Shipping } from '@/types'
 import { State } from '@/utils/cart/machine'
+import { send } from '@/utils/cart'
+import { redirect } from 'next/navigation'
 
-export default function Totals({
+export default async function Totals({
     state,
     lineItems,
+    shipping,
 }: {
     state: State
     lineItems: LineItem[]
+    shipping: Shipping[]
 }) {
-    const shippingFee = 395
+    const checkout = async (formData: FormData) => {
+        'use server'
+        await send({ type: 'checkout' })
+        revalidatePath('/cart')
+    }
+
+    const continueShopping = async (formData: FormData) => {
+        'use server'
+        await send({ type: 'continueShopping' })
+        redirect('/shop')
+    }
 
     const subTotal = lineItems.reduce(
         (m: number, n: LineItem) => (m += n.quantity * n.price),
         0
     )
+
+    let chosenMethod: Shipping | null = null
+
+    if (state.context.shipping) {
+        chosenMethod = shipping.filter(
+            (s) => s.method === state.context.shipping
+        )[0]
+    }
+
+    let defaultMethod: Shipping | null = shipping.filter((s) => s.is_default)[0]
+
+    const shippingFee = chosenMethod?.price || defaultMethod?.price
 
     return (
         <div className='flex flex-col gap-4'>
@@ -45,13 +71,15 @@ export default function Totals({
             )}
             <div className='flex flex-col gap-4'>
                 {subTotal > 0 && (
-                    <Link href='/cart' className='btn w-full'>
-                        Checkout
-                    </Link>
+                    <form action={checkout}>
+                        <button className='btn w-full'>Checkout</button>
+                    </form>
                 )}
-                <Link href='/shop' className='btn btn-outline w-full'>
-                    Back to shop
-                </Link>
+                <form action={continueShopping}>
+                    <button className='btn btn-outline w-full'>
+                        Continue shopping
+                    </button>
+                </form>
             </div>
         </div>
     )
