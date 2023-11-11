@@ -7,25 +7,9 @@ export const send = async (payload: any) => {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
-    const {
-        data: { session },
-        error: sessionError,
-    } = await supabase.auth.getSession()
-
-    if (sessionError) {
-        throw sessionError
-    }
-
-    if (!session) {
-        throw new Error(
-            'cannot send payload to machine without a supabase session'
-        )
-    }
-
     const { data, error: fetchError } = await supabase
         .from('sessions')
         .select('cart')
-        .eq('id', session?.user.id)
         .maybeSingle()
 
     if (fetchError) {
@@ -60,7 +44,7 @@ export const send = async (payload: any) => {
 
             const { data, error: upsertError } = await supabase
                 .from('sessions')
-                .upsert({ id: session.user.id, cart })
+                .upsert({ cart })
 
             if (upsertError) {
                 actorError = upsertError

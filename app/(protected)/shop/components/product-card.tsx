@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import Amount from './amount'
 import { type Product } from '@/types'
+import { Amount } from '@/components'
 
 const ProductCard = (product: Product) => {
     return (
