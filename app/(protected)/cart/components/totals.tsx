@@ -18,7 +18,7 @@ export default function Totals({
     )
 
     return (
-        <div>
+        <div className='flex flex-col gap-4'>
             <div className='text-center'>
                 <div className='text-lg'>Cart Total</div>
                 <div className='text-2xl font-semibold'>
@@ -43,9 +43,16 @@ export default function Totals({
                     </tbody>
                 </table>
             )}
-            <Link href='/shop' className='btn btn-outline w-full mt-8'>
-                Back to shop
-            </Link>
+            <div className='flex flex-col gap-4'>
+                {subTotal > 0 && (
+                    <Link href='/cart' className='btn w-full'>
+                        Checkout
+                    </Link>
+                )}
+                <Link href='/shop' className='btn btn-outline w-full'>
+                    Back to shop
+                </Link>
+            </div>
         </div>
     )
 }

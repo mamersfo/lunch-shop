@@ -79,6 +79,30 @@ export interface Database {
         }
         Relationships: []
       }
+      shipping: {
+        Row: {
+          id: number
+          max_days: number
+          method: string
+          min_days: number
+          price: number
+        }
+        Insert: {
+          id?: number
+          max_days: number
+          method: string
+          min_days: number
+          price: number
+        }
+        Update: {
+          id?: number
+          max_days?: number
+          method?: string
+          min_days?: number
+          price?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
