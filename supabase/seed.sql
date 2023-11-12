@@ -68,3 +68,8 @@ INSERT INTO
     auth.identities (id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 VALUES
     ('4dd5b7ec-6832-4f4c-acdf-39d6316dba5d', '4dd5b7ec-6832-4f4c-acdf-39d6316dba5d'::uuid, '{"sub": "4dd5b7ec-6832-4f4c-acdf-39d6316dba5d", "email": "customer1@finalist.nl"}', 'email', '2023-04-22 13:10:31.458239+00', '2022-10-04 03:41:27.391146+00', '2023-04-22 13:10:31.463703+00');
+
+-- shipping
+insert into shipping ( method, price, min_days, max_days, is_default ) values
+( 'standard', 395, 2, 3, TRUE),
+( 'express', 795, 1, 2, FALSE);

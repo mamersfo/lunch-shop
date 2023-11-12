@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server'
 import { type Session } from '@/types'
 import { type Context } from '@/utils/cart/machine'
 
-export default async function CartIcon() {
+export default async function CartIcon({ href }: { href: string }) {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
@@ -17,15 +17,12 @@ export default async function CartIcon() {
     }
 
     const session = data as Session
-    const cart = session.cart as {
+    const cart = session?.cart as {
         context: Context
     }
 
     return (
-        <a
-            href='/shop/cart'
-            className='btn btn-ghost btn-circle cursor-pointer'
-        >
+        <a href={href} className='btn btn-ghost btn-circle cursor-pointer'>
             <div className='indicator'>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -42,7 +39,7 @@ export default async function CartIcon() {
                     />
                 </svg>
                 <span className='badge badge-sm indicator-item bg-red-500 text-white'>
-                    {cart.context.products?.length || 0}
+                    {cart?.context.products?.length || 0}
                 </span>
             </div>
         </a>

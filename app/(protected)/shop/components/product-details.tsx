@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Amount, PhotoCredits } from '@/components'
+import { revalidatePath } from 'next/cache'
 import { type Tables } from '@/types'
 import { send } from '@/utils/cart'
-import { revalidatePath } from 'next/cache'
+import { Amount } from '@/components'
+import PhotoCredits from './photo-credits'
 
 const ProductDetails = (product: Tables<'products'>) => {
     const addToCart = async () => {

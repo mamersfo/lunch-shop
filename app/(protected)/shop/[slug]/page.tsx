@@ -1,5 +1,5 @@
 import { supabase } from '@/utils/supabase/static'
-import { ProductDetails } from '@/components'
+import { ProductDetails } from '../components'
 import { type Product } from '@/types'
 
 export const generateStaticParams = async () => {

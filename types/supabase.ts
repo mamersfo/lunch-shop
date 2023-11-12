@@ -79,6 +79,33 @@ export interface Database {
         }
         Relationships: []
       }
+      shipping: {
+        Row: {
+          id: number
+          is_default: boolean
+          max_days: number
+          method: string
+          min_days: number
+          price: number
+        }
+        Insert: {
+          id?: number
+          is_default?: boolean
+          max_days: number
+          method: string
+          min_days: number
+          price: number
+        }
+        Update: {
+          id?: number
+          is_default?: boolean
+          max_days?: number
+          method?: string
+          min_days?: number
+          price?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

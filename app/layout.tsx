@@ -7,7 +7,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
     metadataBase: new URL(defaultUrl),
-    title: 'Lunch shop',
+    title: 'dogswagshop',
 }
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
     return (
         <html lang='en' className={GeistSans.className}>
             <body>
-                <main>{children}</main>
+                <main className='p-4'>{children}</main>
             </body>
         </html>
     )

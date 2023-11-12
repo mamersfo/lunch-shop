@@ -1,8 +1,9 @@
-import { PhotoCredits, ProductCard, Protected } from '@/components'
+import { Protected } from '@/components'
+import { PhotoCredits, ProductCard } from './components'
 import { supabase } from '@/utils/supabase/static'
 import { type Product } from '@/types'
 
-export default async function Shop() {
+export default async function Page() {
     const { data, error } = await supabase.from('products').select()
 
     if (error) {
