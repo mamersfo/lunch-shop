@@ -75,7 +75,7 @@ export default async function Totals({
                 </table>
             )}
             <div className='flex flex-col gap-4'>
-                {subTotal > 0 && (
+                {state.value === 'shopping' && subTotal > 0 && (
                     <form action={checkout}>
                         <button className='btn w-full'>Checkout</button>
                     </form>

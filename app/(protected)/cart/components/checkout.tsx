@@ -137,7 +137,7 @@ export default async function Checkout({
                                     />
                                 </div>
                             ))}
-                            <button className='btn mt-4'>Apply</button>
+                            <button className='btn mt-4 w-full'>Update</button>
                         </div>
                     )}
                 </div>
