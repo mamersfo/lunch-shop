@@ -33,14 +33,18 @@ export const send = async (payload: any) => {
     }
 
     let actorError = null
+    let value = null
 
     actor.subscribe({
-        async next(snapshot: any) {},
+        async next(snapshot: any) {
+            value = snapshot.value
+        },
         async error(error: any) {
             actorError = error
         },
         async complete() {
             const cart = actor.getPersistedState()
+            console.log('saving:', cart)
 
             const { data, error: upsertError } = await supabase
                 .from('sessions')
@@ -59,4 +63,6 @@ export const send = async (payload: any) => {
     if (actorError) {
         throw new Error(`send() - error: ${(actorError as Error).message}`)
     }
+
+    return value
 }

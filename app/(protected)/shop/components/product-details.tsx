@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { revalidatePath } from 'next/cache'
 import { type Tables } from '@/types'
 import { send } from '@/utils/cart'
-import { Amount } from '@/components'
+import { Amount, CartState } from '@/app/components'
 import PhotoCredits from './photo-credits'
 
 const ProductDetails = (product: Tables<'products'>) => {
@@ -51,6 +51,7 @@ const ProductDetails = (product: Tables<'products'>) => {
                 <Link href='/shop' className='mt-4 text-sm underline'>
                     Back to shop
                 </Link>
+                <CartState />
             </div>
         </div>
     )

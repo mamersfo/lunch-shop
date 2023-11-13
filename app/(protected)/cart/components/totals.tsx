@@ -1,9 +1,11 @@
-import { revalidatePath } from 'next/cache'
-import { Amount } from '@/components'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { Amount, CartState } from '@/app/components'
 import { LineItem, Shipping } from '@/types'
 import { State } from '@/utils/cart/machine'
 import { send } from '@/utils/cart'
-import { redirect } from 'next/navigation'
+import { createCheckoutSession } from '@/app/actions/stripe'
+import Delivery from './delivery'
 
 export default async function Totals({
     state,
@@ -12,14 +14,8 @@ export default async function Totals({
 }: {
     state: State
     lineItems: LineItem[]
-    shipping: Shipping[]
+    shipping: Shipping | null
 }) {
-    const checkout = async (formData: FormData) => {
-        'use server'
-        await send({ type: 'checkout' })
-        revalidatePath('/cart')
-    }
-
     const continueShopping = async (formData: FormData) => {
         'use server'
         await send({ type: 'continueShopping' })
@@ -31,24 +27,16 @@ export default async function Totals({
         0
     )
 
-    let chosenMethod: Shipping | null = null
-
-    if (state?.context.shipping) {
-        chosenMethod = shipping.filter(
-            (s) => s.method === state.context.shipping
-        )[0]
-    }
-
-    let defaultMethod: Shipping | null = shipping.filter((s) => s.is_default)[0]
-
-    const shippingFee = chosenMethod?.price || defaultMethod?.price
-
     return (
         <div className='flex flex-col gap-4'>
             <div className='text-center'>
                 <div className='text-lg'>Cart Total</div>
                 <div className='text-2xl font-semibold'>
-                    <Amount value={subTotal ? +subTotal + shippingFee : 0} />
+                    <Amount
+                        value={
+                            subTotal ? +subTotal + (shipping?.price || 0) : 0
+                        }
+                    />
                 </div>
             </div>
             {subTotal > 0 && (
@@ -68,23 +56,23 @@ export default async function Totals({
                                 delivery:
                             </td>
                             <td className='text-right'>
-                                <Amount value={shippingFee} />
+                                <Amount value={shipping?.price || 0} />
                             </td>
                         </tr>
                     </tbody>
                 </table>
             )}
+            <Delivery selected={state?.context.shipping} />
             <div className='flex flex-col gap-4'>
-                {state.value === 'shopping' && subTotal > 0 && (
-                    <form action={checkout}>
+                {state?.value === 'shopping' && subTotal > 0 && (
+                    <form action={createCheckoutSession}>
                         <button className='btn w-full'>Checkout</button>
                     </form>
                 )}
-                <form action={continueShopping}>
-                    <button className='btn btn-outline w-full'>
-                        Continue shopping
-                    </button>
-                </form>
+                <Link href='/shop' className='btn btn-outline w-full'>
+                    Continue shopping
+                </Link>
+                <CartState />
             </div>
         </div>
     )
