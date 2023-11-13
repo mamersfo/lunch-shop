@@ -1,18 +1,8 @@
 import { assign, createMachine } from 'xstate'
 
-export type Address = {
-    name: string
-    'address-line1': string
-    'address-line2': string
-    'postal-code': string
-    city: string
-}
-
 export type Context = {
     products: string[]
-    shipping?: string
-    address?: Address
-    error?: string
+    shipping: string
 }
 
 export type State = {
@@ -29,19 +19,15 @@ export const cartMachine = createMachine(
             events:
                 | { type: 'addToCart'; product: string }
                 | { type: 'removeFromCart'; product: string }
-                | { type: 'checkout' }
-                | { type: 'continueShopping' }
-                | {
-                      type: 'updateAddress'
-                      address: Address
-                  }
                 | {
                       type: 'updateShipping'
                       method: string
                   }
+                | { type: 'paymentSucceeded' }
         },
         context: {
             products: [],
+            shipping: 'standard',
         },
         initial: 'shopping',
         states: {
@@ -70,32 +56,19 @@ export const cartMachine = createMachine(
                             }),
                         ],
                     },
-                    checkout: {
-                        target: 'checkout',
-                    },
-                },
-            },
-            checkout: {
-                on: {
-                    continueShopping: {
-                        target: 'shopping',
-                    },
-                    updateAddress: {
-                        target: 'checkout',
-                        actions: [
-                            assign({
-                                address: ({ event }) => {
-                                    return event.address
-                                },
-                            }),
-                            'persist',
-                        ],
-                    },
                     updateShipping: {
-                        target: 'checkout',
+                        target: 'shopping',
                         actions: [
                             assign({
                                 shipping: ({ event }) => event.method,
+                            }),
+                        ],
+                    },
+                    paymentSucceeded: {
+                        target: 'shopping',
+                        actions: [
+                            assign({
+                                products: [],
                             }),
                         ],
                     },

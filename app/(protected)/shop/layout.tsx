@@ -1,4 +1,4 @@
-import { Header, Logout } from '@/components'
+import { Header, Logout } from '@/app/components'
 import { CartIcon } from './components'
 
 export default async function Layout({

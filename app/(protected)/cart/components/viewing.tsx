@@ -1,16 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { revalidatePath } from 'next/cache'
-import { Amount } from '@/components'
+import { Amount } from '@/app/components'
 import { type LineItem } from '@/types'
 import { send } from '@/utils/cart'
-import { type State } from '@/utils/cart/machine'
 
 export default async function Viewing({
-    state,
     lineItems,
 }: {
-    state: State
     lineItems: LineItem[]
 }) {
     const removeFromCart = async (formData: FormData) => {

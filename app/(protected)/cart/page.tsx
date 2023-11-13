@@ -1,8 +1,7 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { type Session } from '@/types'
-import { Checkout, Totals, Viewing } from './components'
-import { type LineItem } from '@/types'
+import { type LineItem, Session } from '@/types'
+import { Totals, Viewing } from './components'
 import { type State } from '@/utils/cart/machine'
 
 export default async function Page() {
@@ -47,6 +46,8 @@ export default async function Page() {
     const { data: shipping, error: shippingError } = await supabase
         .from('shipping')
         .select()
+        .eq('method', state?.context.shipping)
+        .maybeSingle()
 
     if (shippingError) {
         throw new Error(shippingError.message)
@@ -54,15 +55,10 @@ export default async function Page() {
 
     return (
         <div className='flex flex-row gap-4'>
-            <div className='w-3/4 flex flex-col gap-4'>
-                {state?.value === 'shopping' && (
-                    <Viewing {...{ state, lineItems }} />
-                )}
-                {state?.value === 'checkout' && (
-                    <Checkout {...{ state, shipping }} />
-                )}
+            <div className='w-2/3 flex flex-col gap-4'>
+                <Viewing {...{ lineItems }} />
             </div>
-            <div className='w-1/4'>
+            <div className='w-1/3'>
                 <div className='flex flex-col gap-4'>
                     <Totals {...{ state, lineItems, shipping }} />
                 </div>
