@@ -25,7 +25,6 @@ export default async function Page({
                 <div className='text-lg font-semibold text-center'>
                     Order confirmed!
                 </div>
-                <CartState />
                 <Link href='/shop' className='btn btn-outline w-full'>
                     Continue shopping
                 </Link>
