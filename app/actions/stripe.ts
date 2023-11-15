@@ -6,7 +6,7 @@ import { type Stripe } from 'stripe'
 import { stripe } from '@/utils/stripe'
 import { redirect } from 'next/navigation'
 import { type Session } from '@/types'
-import { type State } from '@/utils/cart/machine'
+import { type State } from '@/lib/cart/machine'
 
 export async function createCheckoutSession(data: FormData): Promise<void> {
     const cookieStore = cookies()

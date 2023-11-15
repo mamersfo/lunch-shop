@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 import { type LineItem, Session } from '@/types'
 import { Totals, Viewing } from './components'
-import { type State } from '@/utils/cart/machine'
+import { type State } from '@/lib/cart/machine'
 
 export default async function Page() {
     const cookieStore = cookies()

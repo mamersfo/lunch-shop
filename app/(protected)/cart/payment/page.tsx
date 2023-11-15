@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { Stripe } from 'stripe'
 import { stripe } from '@/utils/stripe'
-import { send } from '@/utils/cart'
+import { send } from '@/lib/cart'
 import { CartState } from '@/app/components'
 
 export default async function Page({

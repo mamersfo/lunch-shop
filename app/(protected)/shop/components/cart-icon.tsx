@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 import { type Session } from '@/types'
-import { type Context } from '@/utils/cart/machine'
+import { type Context } from '@/lib/cart/machine'
 
 export default async function CartIcon({ href }: { href: string }) {
     const cookieStore = cookies()

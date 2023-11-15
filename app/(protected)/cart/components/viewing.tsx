@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { revalidatePath } from 'next/cache'
 import { Amount } from '@/app/components'
 import { type LineItem } from '@/types'
-import { send } from '@/utils/cart'
+import { send } from '@/lib/cart'
 
 export default async function Viewing({
     lineItems,

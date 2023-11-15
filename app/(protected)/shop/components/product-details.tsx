@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { revalidatePath } from 'next/cache'
 import { type Tables } from '@/types'
-import { send } from '@/utils/cart'
+import { send } from '@/lib/cart'
 import { Amount, CartState } from '@/app/components'
 import PhotoCredits from './photo-credits'
 
