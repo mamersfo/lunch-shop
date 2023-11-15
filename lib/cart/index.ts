@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { cartMachine } from './machine'
+import { cartMachine } from '@/lib/cart/machine'
 import { createActor } from 'xstate'
 
 export const send = async (payload: any) => {
