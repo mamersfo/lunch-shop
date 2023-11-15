@@ -34,6 +34,46 @@ export interface Database {
   }
   public: {
     Tables: {
+      orders: {
+        Row: {
+          created_at: string
+          id: number
+          order_id: string | null
+          shipping_id: number | null
+          state: Json | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          order_id?: string | null
+          shipping_id?: number | null
+          state?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          order_id?: string | null
+          shipping_id?: number | null
+          state?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_shipping_id_fkey"
+            columns: ["shipping_id"]
+            referencedRelation: "shipping"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       products: {
         Row: {
           id: number
