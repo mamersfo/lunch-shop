@@ -29,6 +29,12 @@ dependencies:
   '@trigger.dev/sdk':
     specifier: ^2.2.6
     version: 2.2.6
+  '@trigger.dev/stripe':
+    specifier: ^2.2.6
+    version: 2.2.6
+  '@trigger.dev/supabase':
+    specifier: ^2.2.6
+    version: 2.2.6
   autoprefixer:
     specifier: 10.4.15
     version: 10.4.15(postcss@8.4.29)
@@ -374,6 +380,14 @@ packages:
       zod-error: 1.5.0
     dev: false
 
+  /@trigger.dev/integration-kit@2.2.6:
+    resolution: {integrity: sha512-8kti3cmmPqS2FAY8I299BI1o0KI0Tt+5JrdPdM068xN6OfyA+uTXtY2Jj+bi07UOx1/dA1eiA4D5bywJsUOWrw==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@trigger.dev/core': 2.2.6
+      uuid: 9.0.1
+    dev: false
+
   /@trigger.dev/nextjs@2.2.6(@trigger.dev/sdk@2.2.6)(next@14.0.1):
     resolution: {integrity: sha512-XrSUn+9wL2bOWEM75v1cYXIL4l3YVx8ExjnwR3xs+UBpaU1KTjCIKQHwAbKbHtQ+/tkEuA7FoSBxKF+La4QRdg==}
     engines: {node: '>=18.0.0'}
@@ -423,6 +437,35 @@ packages:
       ulid: 2.3.0
       uuid: 9.0.1
       ws: 8.14.2
+      zod: 3.22.3
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
+
+  /@trigger.dev/stripe@2.2.6:
+    resolution: {integrity: sha512-BUUNM4/R1tTxDvxF5wvdLrraMqtv3EObVf+YHo7ek5v75N8H+WFn6tTTaCwoIUwaUrUSY8Uz4Sb+HUH+/ep8XQ==}
+    engines: {node: '>=16.8.0'}
+    dependencies:
+      '@trigger.dev/integration-kit': 2.2.6
+      '@trigger.dev/sdk': 2.2.6
+      stripe: 12.18.0
+      zod: 3.22.3
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
+
+  /@trigger.dev/supabase@2.2.6:
+    resolution: {integrity: sha512-JCKIocyyJmGUMYvx7sJi02emN7zexAQ5jmHT1vlXD25w9+oJeujf7exvktoOQBMiRkuDYnFZ9l1qbssbSGUJag==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@supabase/supabase-js': 2.38.4
+      '@trigger.dev/integration-kit': 2.2.6
+      '@trigger.dev/sdk': 2.2.6
+      supabase-management-js: 0.1.6
       zod: 3.22.3
     transitivePeerDependencies:
       - bufferutil
@@ -1130,6 +1173,10 @@ packages:
       wrappy: 1.0.2
     dev: false
 
+  /openapi-fetch@0.6.2:
+    resolution: {integrity: sha512-Faj29Kzh7oCbt1bz6vAGNKtRJlV/GolOQTx87eYUnfCK7eVXdN9jQVojroc7tcJ5OQgyhbeOqD7LS/8UtGBnMQ==}
+    dev: false
+
   /path-is-absolute@1.0.1:
     resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
@@ -1366,6 +1413,14 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: false
 
+  /stripe@12.18.0:
+    resolution: {integrity: sha512-cYjgBM2SY/dTm8Lr6eMyyONaHTZHA/QjHxFUIW5WH8FevSRIGAVtXEmBkUXF1fsqe7QvvRgQSGSJZmjDacegGg==}
+    engines: {node: '>=12.*'}
+    dependencies:
+      '@types/node': 20.3.1
+      qs: 6.11.2
+    dev: false
+
   /stripe@14.4.0:
     resolution: {integrity: sha512-E3IxDo/Bvu0TtYrKfAf8lEYd0beTjFSN4xemuw2oEfUyxFpJyrzRZOw50HIEXFYYHWNDORicd8G8R4joCbN3/Q==}
     engines: {node: '>=12.*'}
@@ -1403,6 +1458,13 @@ packages:
       mz: 2.7.0
       pirates: 4.0.6
       ts-interface-checker: 0.1.13
+    dev: false
+
+  /supabase-management-js@0.1.6:
+    resolution: {integrity: sha512-TDQg6Nh7e2DaLmMjqpJt7Wwh2Au5loVPH2gwKMkD89e3pb5F/zMQGWt22asEXme031jEmhjazixFH0lwMgbRJA==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      openapi-fetch: 0.6.2
     dev: false
 
   /supports-color@7.2.0:
