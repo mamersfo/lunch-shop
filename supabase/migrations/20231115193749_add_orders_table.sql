@@ -12,9 +12,13 @@ create table "public"."orders" (
 
 alter table "public"."orders" enable row level security;
 
+CREATE UNIQUE INDEX orders_order_id_key ON public.orders USING btree (order_id);
+
 CREATE UNIQUE INDEX orders_pkey ON public.orders USING btree (id);
 
 alter table "public"."orders" add constraint "orders_pkey" PRIMARY KEY using index "orders_pkey";
+
+alter table "public"."orders" add constraint "orders_order_id_key" UNIQUE using index "orders_order_id_key";
 
 alter table "public"."orders" add constraint "orders_shipping_id_fkey" FOREIGN KEY (shipping_id) REFERENCES shipping(id) not valid;
 
