@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Amount, CartState } from '@/app/components'
+import { Amount, CartState } from '@/components'
 import { LineItem, Shipping } from '@/types'
 import { State } from '@/lib/cart/machine'
 import { send } from '@/lib/cart'

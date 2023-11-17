@@ -63,6 +63,18 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
         .eq('method', state.context.shipping)
         .maybeSingle()
 
+    const { data: order_id, error: orderError } = await supabase.rpc(
+        'new_order_id'
+    )
+
+    console.log('new_order_id', order_id)
+
+    if (orderError) {
+        throw orderError
+    }
+
+    console.log('order:', order_id)
+
     if (shipping) {
         line_items = [
             ...line_items,
@@ -88,6 +100,9 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
             mode: 'payment',
             shipping_address_collection: {
                 allowed_countries: ['NL'],
+            },
+            metadata: {
+                order_id,
             },
             success_url: `${origin}/cart/payment?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${origin}/cart?session_id={CHECKOUT_SESSION_ID}`,

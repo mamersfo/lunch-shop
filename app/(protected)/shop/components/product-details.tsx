@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { revalidatePath } from 'next/cache'
 import { type Tables } from '@/types'
 import { send } from '@/lib/cart'
-import { Amount, CartState } from '@/app/components'
+import { Amount, CartState } from '@/components'
 import PhotoCredits from './photo-credits'
 
 const ProductDetails = (product: Tables<'products'>) => {

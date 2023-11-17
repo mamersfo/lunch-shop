@@ -1,4 +1,4 @@
-import { Header, Logout } from '@/app/components'
+import { Header, Logout } from '@/components'
 
 export default async function Layout({
     children,

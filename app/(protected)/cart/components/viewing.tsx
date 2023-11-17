@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { revalidatePath } from 'next/cache'
-import { Amount } from '@/app/components'
+import { Amount } from '@/components'
 import { type LineItem } from '@/types'
 import { send } from '@/lib/cart'
 
