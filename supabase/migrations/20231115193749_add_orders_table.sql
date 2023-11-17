@@ -49,7 +49,8 @@ to public
 using ((auth.uid() = user_id));
 
 
-CREATE TRIGGER on_order_created AFTER INSERT ON public.orders FOR EACH ROW EXECUTE FUNCTION handle_new_order();
-
-
-
+CREATE OR REPLACE FUNCTION public.new_order_id()
+ RETURNS text
+ LANGUAGE sql
+RETURN concat(('DSS-'::text || upper(substr(md5((random())::text), 0, 5))))
+;
