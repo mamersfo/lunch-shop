@@ -1,4 +1,4 @@
-import { Header, Logout } from '@/components'
+import { Header, Logout } from '@/app/components'
 
 export default async function Layout({
     children,
@@ -7,7 +7,7 @@ export default async function Layout({
 }) {
     return (
         <>
-            <Header title='dogswagshop'>
+            <Header title='dogswagshop' href='/shop'>
                 <Logout />
             </Header>
             {children}

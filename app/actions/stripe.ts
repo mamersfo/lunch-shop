@@ -5,12 +5,21 @@ import { createClient } from '@/utils/supabase/server'
 import { type Stripe } from 'stripe'
 import { stripe } from '@/utils/stripe'
 import { redirect } from 'next/navigation'
-import { type Session } from '@/types'
+import { type Session, Shipping } from '@/types'
 import { type State } from '@/lib/cart/machine'
 
 export async function createCheckoutSession(data: FormData): Promise<void> {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
+
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser()
+
+    if (userError) {
+        throw userError
+    }
 
     const { data: sessionData, error: sessionError } = await supabase
         .from('sessions')
@@ -57,38 +66,12 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
             }
         })
 
-    const { data: shipping, error: shippingError } = await supabase
-        .from('shipping')
-        .select()
-        .eq('method', state.context.shipping)
-        .maybeSingle()
-
     const { data: order_id, error: orderError } = await supabase.rpc(
         'new_order_id'
     )
 
-    console.log('new_order_id', order_id)
-
     if (orderError) {
         throw orderError
-    }
-
-    console.log('order:', order_id)
-
-    if (shipping) {
-        line_items = [
-            ...line_items,
-            {
-                quantity: 1,
-                price_data: {
-                    currency: 'eur',
-                    product_data: {
-                        name: `Shipping (${shipping?.method})`,
-                    },
-                    unit_amount: shipping?.price,
-                },
-            },
-        ]
     }
 
     const origin = headers().get('origin')
@@ -96,13 +79,18 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
     const checkoutSession: Stripe.Checkout.Session =
         await stripe.checkout.sessions.create({
             client_reference_id: session.id,
-            line_items,
-            mode: 'payment',
-            shipping_address_collection: {
-                allowed_countries: ['NL'],
-            },
+            customer_email: user?.email,
             metadata: {
                 order_id,
+            },
+            line_items,
+            mode: 'payment',
+            shipping_options: [
+                { shipping_rate: 'shr_1ODYTIH4m2ID9f1WdOJOauNA' },
+                { shipping_rate: 'shr_1ODYUXH4m2ID9f1WdQXyJxqf' },
+            ],
+            shipping_address_collection: {
+                allowed_countries: ['NL'],
             },
             success_url: `${origin}/cart/payment?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${origin}/cart?session_id={CHECKOUT_SESSION_ID}`,

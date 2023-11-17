@@ -1,4 +1,4 @@
-import { Protected } from '@/components'
+import { Protected } from '@/app/components'
 import { PhotoCredits, ProductCard } from './components'
 import { supabase } from '@/utils/supabase/static'
 import { type Product } from '@/types'
