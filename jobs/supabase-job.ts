@@ -21,12 +21,12 @@ client.defineJob({
     }),
     run: async (payload, io, ctx) => {
         const { data, error } = await io.supabase.runTask(
-            'find-shippings',
+            'find-orders',
             async (db) => {
-                return db.from('shipping').select('*')
+                return db.from('orders').select('*')
             }
         )
 
-        await io.logger.info(`Shipping: ${JSON.stringify(data)}`)
+        await io.logger.info(`Orders: ${JSON.stringify(data)}`)
     },
 })

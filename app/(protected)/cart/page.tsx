@@ -43,16 +43,6 @@ export default async function Page() {
         )
     }
 
-    const { data: shipping, error: shippingError } = await supabase
-        .from('shipping')
-        .select()
-        .eq('method', state?.context.shipping)
-        .maybeSingle()
-
-    if (shippingError) {
-        throw new Error(shippingError.message)
-    }
-
     return (
         <div className='flex flex-row gap-4'>
             <div className='w-2/3 flex flex-col gap-4'>
@@ -60,7 +50,7 @@ export default async function Page() {
             </div>
             <div className='w-1/3'>
                 <div className='flex flex-col gap-4'>
-                    <Totals {...{ state, lineItems, shipping }} />
+                    <Totals {...{ state, lineItems }} />
                 </div>
             </div>
         </div>

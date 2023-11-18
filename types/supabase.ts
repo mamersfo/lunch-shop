@@ -34,12 +34,54 @@ export interface Database {
   }
   public: {
     Tables: {
+      line_items: {
+        Row: {
+          order_id: number
+          price: number
+          product_id: number
+          quantity: number
+          user_id: string
+        }
+        Insert: {
+          order_id: number
+          price: number
+          product_id: number
+          quantity: number
+          user_id: string
+        }
+        Update: {
+          order_id?: number
+          price?: number
+          product_id?: number
+          quantity?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "line_items_order_id_fkey"
+            columns: ["order_id"]
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "line_items_product_id_fkey"
+            columns: ["product_id"]
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "line_items_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       orders: {
         Row: {
           created_at: string
           id: number
           order_id: string | null
-          shipping_id: number | null
           state: Json | null
           status: string | null
           updated_at: string | null
@@ -49,7 +91,6 @@ export interface Database {
           created_at?: string
           id?: number
           order_id?: string | null
-          shipping_id?: number | null
           state?: Json | null
           status?: string | null
           updated_at?: string | null
@@ -59,20 +100,12 @@ export interface Database {
           created_at?: string
           id?: number
           order_id?: string | null
-          shipping_id?: number | null
           state?: Json | null
           status?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "orders_shipping_id_fkey"
-            columns: ["shipping_id"]
-            referencedRelation: "shipping"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       products: {
         Row: {
@@ -116,33 +149,6 @@ export interface Database {
         Update: {
           cart?: Json | null
           id?: string
-        }
-        Relationships: []
-      }
-      shipping: {
-        Row: {
-          id: number
-          is_default: boolean
-          max_days: number
-          method: string
-          min_days: number
-          price: number
-        }
-        Insert: {
-          id?: number
-          is_default?: boolean
-          max_days: number
-          method: string
-          min_days: number
-          price: number
-        }
-        Update: {
-          id?: number
-          is_default?: boolean
-          max_days?: number
-          method?: string
-          min_days?: number
-          price?: number
         }
         Relationships: []
       }

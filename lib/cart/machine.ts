@@ -2,7 +2,6 @@ import { assign, createMachine } from 'xstate'
 
 export type Context = {
     products: string[]
-    shipping: string
 }
 
 export type State = {
@@ -19,15 +18,9 @@ export const cartMachine = createMachine(
             events:
                 | { type: 'addToCart'; product: string }
                 | { type: 'removeFromCart'; product: string }
-                | {
-                      type: 'updateShipping'
-                      method: string
-                  }
-                | { type: 'paymentSucceeded' }
         },
         context: {
             products: [],
-            shipping: 'standard',
         },
         initial: 'shopping',
         states: {
@@ -53,22 +46,6 @@ export const cartMachine = createMachine(
                                         (p) => p !== event.product
                                     )
                                 },
-                            }),
-                        ],
-                    },
-                    updateShipping: {
-                        target: 'shopping',
-                        actions: [
-                            assign({
-                                shipping: ({ event }) => event.method,
-                            }),
-                        ],
-                    },
-                    paymentSucceeded: {
-                        target: 'shopping',
-                        actions: [
-                            assign({
-                                products: [],
                             }),
                         ],
                     },

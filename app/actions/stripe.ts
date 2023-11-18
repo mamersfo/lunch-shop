@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/server'
 import { type Stripe } from 'stripe'
 import { stripe } from '@/utils/stripe'
 import { redirect } from 'next/navigation'
-import { type Session, Shipping } from '@/types'
+import { type Session } from '@/types'
 import { type State } from '@/lib/cart/machine'
 
 export async function createCheckoutSession(data: FormData): Promise<void> {
