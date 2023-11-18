@@ -9,6 +9,7 @@ export type LineItem = {
 
 export type Context = {
     lineItems: LineItem[]
+    itemCount: number
 }
 
 export type State = {
@@ -33,6 +34,7 @@ export const cartMachine = createMachine(
         },
         context: {
             lineItems: [],
+            itemCount: 0,
         },
         initial: 'shopping',
         states: {
@@ -40,76 +42,56 @@ export const cartMachine = createMachine(
                 on: {
                     addToCart: {
                         target: 'shopping',
-                        actions: [
-                            assign({
-                                lineItems: ({ context, event }) =>
-                                    updateLineItems(
-                                        context.lineItems,
-                                        {
-                                            slug: event.slug,
-                                            name: event.name,
-                                            price: event.price,
-                                        },
-                                        +1
-                                    ),
-                            }),
-                        ],
+                        actions: ['add', 'count'],
                     },
                     removeFromCart: {
                         target: 'shopping',
-                        actions: [
-                            assign({
-                                lineItems: ({ context, event }) =>
-                                    updateLineItems(
-                                        context.lineItems,
-                                        {
-                                            slug: event.slug,
-                                        },
-                                        -1
-                                    ),
-                            }),
-                        ],
+                        actions: ['remove', 'count'],
                     },
                 },
             },
         },
     },
-    {}
-)
+    {
+        actions: {
+            add: assign({
+                lineItems: ({ context, event }) => {
+                    if (event.type === 'addToCart') {
+                        const found = context.lineItems.filter(
+                            (li) => li.slug === event.slug
+                        )
 
-const updateLineItems = (
-    lineItems: LineItem[],
-    product: {
-        slug: string
-        name?: string
-        price?: number
-    },
-    quantity: number
-) => {
-    const found = lineItems.filter((li) => li.slug === product.slug)
+                        if (found.length > 0) {
+                            return context.lineItems.map((li) => {
+                                if (li.slug === event.slug) {
+                                    li.quantity += 1
+                                }
+                                return li
+                            })
+                        } else {
+                            return [
+                                ...context.lineItems,
+                                {
+                                    slug: event.slug,
+                                    name: event.name,
+                                    price: event.price,
+                                    quantity: 1,
+                                },
+                            ]
+                        }
+                    }
 
-    if (found.length > 0) {
-        if (found[0].quantity + quantity <= 0) {
-            return lineItems.filter((li) => li.slug !== product.slug)
-        }
-
-        return lineItems.map((li) => {
-            if (li.slug === product.slug) {
-                li.quantity += quantity
-            }
-            return li
-        })
-    } else if (product.name && product.price) {
-        return [
-            ...lineItems,
-            {
-                slug: product.slug,
-                name: product.name,
-                price: product.price,
-                quantity,
-            },
-        ]
+                    return context.lineItems
+                },
+            }),
+            remove: assign({
+                lineItems: ({ context, event }) =>
+                    context.lineItems.filter((li) => li.slug !== event.slug),
+            }),
+            count: assign({
+                itemCount: ({ context }) =>
+                    context.lineItems.reduce((m, n) => m + n.quantity, 0),
+            }),
+        },
     }
-
-    return lineItems
-}
+)

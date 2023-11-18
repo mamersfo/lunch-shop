@@ -22,6 +22,7 @@ export default async function Page() {
     return (
         <div className='flex flex-row gap-4'>
             <div className='w-2/3 flex flex-col gap-4'>
+                <div className='text-lg font-semibold'>Items</div>
                 <Viewing {...{ lineItems }} />
             </div>
             <div className='w-1/3'>

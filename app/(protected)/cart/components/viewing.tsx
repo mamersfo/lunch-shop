@@ -18,13 +18,13 @@ export default async function Viewing({
 
     if (lineItems?.length > 0) {
         return (
-            <div className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-4 w-3/4'>
                 {lineItems.map((lineItem, idx) => (
                     <div
                         key={`cart-product-${idx}}`}
                         className='border border-1 py-8 px-4 flex flex-row place-items-center'
                     >
-                        <div className='w-3/5'>
+                        <div className='w-1/2'>
                             <div className='flex flex-row gap-4 place-items-center'>
                                 <Image
                                     src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/shop/karsten-winegeart-${lineItem.slug}-unsplash-thumbnail.jpg`}
@@ -40,16 +40,20 @@ export default async function Viewing({
                                     <div className='font-semibold'>
                                         {lineItem?.name}
                                     </div>
+                                    <div className='text-sm'>
+                                        Price:{' '}
+                                        <Amount value={lineItem?.price} />
+                                    </div>
                                 </Link>
                             </div>
                         </div>
-                        <div className='w-1/5'>
+                        <div className='w-1/4'>
                             <div className='flex flex-col place-items-center'>
                                 <div className='text-xs'>aantal</div>
                                 <div>{lineItem.quantity}</div>
                             </div>
                         </div>
-                        <div className='w-1/5 flex flex-row gap-8'>
+                        <div className='w-1/4 flex flex-row gap-8'>
                             <Amount
                                 value={lineItem.quantity * lineItem.price}
                             />
