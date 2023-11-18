@@ -69,6 +69,8 @@ export const send = async (payload: any) => {
     actor.send(payload)
     actor.stop()
 
+    const state = actor.getPersistedState()
+
     if (actorError) {
         throw new Error(`send() - error: ${(actorError as Error).message}`)
     }

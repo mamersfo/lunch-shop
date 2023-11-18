@@ -1,16 +1,9 @@
 import Link from 'next/link'
 import { Amount, CartState } from '@/app/components'
-import { LineItem } from '@/types'
-import { State } from '@/lib/cart/machine'
+import { type LineItem } from '@/lib/cart/machine'
 import { createCheckoutSession } from '@/app/actions/stripe'
 
-export default async function Totals({
-    state,
-    lineItems,
-}: {
-    state: State
-    lineItems: LineItem[]
-}) {
+export default async function Totals({ lineItems }: { lineItems: LineItem[] }) {
     const total = lineItems.reduce(
         (m: number, n: LineItem) => (m += n.quantity * n.price),
         0
@@ -25,7 +18,7 @@ export default async function Totals({
                 </div>
             </div>
             <div className='flex flex-col gap-4'>
-                {state?.value === 'shopping' && total > 0 && (
+                {total > 0 && (
                     <form action={createCheckoutSession}>
                         <button className='btn w-full'>Checkout</button>
                     </form>

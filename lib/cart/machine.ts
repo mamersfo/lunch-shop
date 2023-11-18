@@ -1,7 +1,14 @@
 import { assign, createMachine } from 'xstate'
 
+export type LineItem = {
+    slug: string
+    name: string
+    price: number
+    quantity: number
+}
+
 export type Context = {
-    products: string[]
+    lineItems: LineItem[]
 }
 
 export type State = {
@@ -16,11 +23,16 @@ export const cartMachine = createMachine(
         types: {} as {
             context: Context
             events:
-                | { type: 'addToCart'; product: string }
-                | { type: 'removeFromCart'; product: string }
+                | {
+                      type: 'addToCart'
+                      slug: string
+                      name: string
+                      price: number
+                  }
+                | { type: 'removeFromCart'; slug: string }
         },
         context: {
-            products: [],
+            lineItems: [],
         },
         initial: 'shopping',
         states: {
@@ -30,10 +42,16 @@ export const cartMachine = createMachine(
                         target: 'shopping',
                         actions: [
                             assign({
-                                products: ({ context, event }) => [
-                                    ...context.products,
-                                    event.product,
-                                ],
+                                lineItems: ({ context, event }) =>
+                                    updateLineItems(
+                                        context.lineItems,
+                                        {
+                                            slug: event.slug,
+                                            name: event.name,
+                                            price: event.price,
+                                        },
+                                        +1
+                                    ),
                             }),
                         ],
                     },
@@ -41,11 +59,14 @@ export const cartMachine = createMachine(
                         target: 'shopping',
                         actions: [
                             assign({
-                                products: ({ context, event }) => {
-                                    return context.products.filter(
-                                        (p) => p !== event.product
-                                    )
-                                },
+                                lineItems: ({ context, event }) =>
+                                    updateLineItems(
+                                        context.lineItems,
+                                        {
+                                            slug: event.slug,
+                                        },
+                                        -1
+                                    ),
                             }),
                         ],
                     },
@@ -55,3 +76,40 @@ export const cartMachine = createMachine(
     },
     {}
 )
+
+const updateLineItems = (
+    lineItems: LineItem[],
+    product: {
+        slug: string
+        name?: string
+        price?: number
+    },
+    quantity: number
+) => {
+    const found = lineItems.filter((li) => li.slug === product.slug)
+
+    if (found.length > 0) {
+        if (found[0].quantity + quantity <= 0) {
+            return lineItems.filter((li) => li.slug !== product.slug)
+        }
+
+        return lineItems.map((li) => {
+            if (li.slug === product.slug) {
+                li.quantity += quantity
+            }
+            return li
+        })
+    } else if (product.name && product.price) {
+        return [
+            ...lineItems,
+            {
+                slug: product.slug,
+                name: product.name,
+                price: product.price,
+                quantity,
+            },
+        ]
+    }
+
+    return lineItems
+}

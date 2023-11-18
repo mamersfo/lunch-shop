@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { revalidatePath } from 'next/cache'
 import { Amount } from '@/app/components'
-import { type LineItem } from '@/types'
+import { type LineItem } from '@/lib/cart/machine'
 import { send } from '@/lib/cart'
 
 export default async function Viewing({
@@ -12,7 +12,7 @@ export default async function Viewing({
 }) {
     const removeFromCart = async (formData: FormData) => {
         'use server'
-        await send({ type: 'removeFromCart', product: formData.get('product') })
+        await send({ type: 'removeFromCart', slug: formData.get('slug') })
         revalidatePath('/cart')
     }
 
@@ -34,7 +34,7 @@ export default async function Viewing({
                                     priority={true}
                                 />
                                 <Link
-                                    href={`/shop/${lineItem.id}`}
+                                    href={`/shop/${lineItem.slug}`}
                                     className='hover:underline'
                                 >
                                     <div className='font-semibold'>
@@ -56,7 +56,7 @@ export default async function Viewing({
                             <form action={removeFromCart}>
                                 <input
                                     type='hidden'
-                                    name='product'
+                                    name='slug'
                                     value={lineItem.slug}
                                 />
                                 <button>

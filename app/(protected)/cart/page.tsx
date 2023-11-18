@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { type LineItem, Cart } from '@/types'
 import { Totals, Viewing } from './components'
 import { type State } from '@/lib/cart/machine'
 
@@ -8,7 +7,7 @@ export default async function Page() {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
-    const { data, error: cartsError } = await supabase
+    const { data: cart, error: cartsError } = await supabase
         .from('carts')
         .select('state')
         .maybeSingle()
@@ -17,31 +16,8 @@ export default async function Page() {
         throw cartsError
     }
 
-    const cart = data as Cart
     const state = cart?.state as State
-
-    let lineItems: LineItem[] = []
-
-    if (state?.context.products.length > 0) {
-        const bag = state.context.products.reduce(
-            (bag: Record<string, number>, slug: string) =>
-                Object.assign(bag, { [slug]: (bag[slug] || 0) + 1 }),
-            {}
-        )
-
-        const { data: products, error: productsError } = await supabase
-            .from('products')
-            .select('id, slug, name, price')
-            .in('slug', Object.keys(bag))
-
-        if (productsError) {
-            throw productsError
-        }
-
-        lineItems = products?.map(
-            (p: any) => Object.assign(p, { quantity: bag[p.slug] }) as LineItem
-        )
-    }
+    const lineItems = state.context.lineItems
 
     return (
         <div className='flex flex-row gap-4'>
@@ -50,7 +26,7 @@ export default async function Page() {
             </div>
             <div className='w-1/3'>
                 <div className='flex flex-col gap-4'>
-                    <Totals {...{ state, lineItems }} />
+                    <Totals {...{ lineItems }} />
                 </div>
             </div>
         </div>

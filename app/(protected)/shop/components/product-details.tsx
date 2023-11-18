@@ -1,15 +1,20 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { revalidatePath } from 'next/cache'
-import { type Tables } from '@/types'
+import { type Product } from '@/types'
 import { send } from '@/lib/cart'
 import { Amount, CartState } from '@/app/components'
 import PhotoCredits from './photo-credits'
 
-const ProductDetails = (product: Tables<'products'>) => {
+export default function ProductDetails(product: Product) {
     const addToCart = async () => {
         'use server'
-        await send({ type: 'addToCart', product: product.slug })
+        await send({
+            type: 'addToCart',
+            slug: product.slug,
+            name: product.name,
+            price: product.price,
+        })
         revalidatePath('/shop')
     }
 
@@ -56,5 +61,3 @@ const ProductDetails = (product: Tables<'products'>) => {
         </div>
     )
 }
-
-export default ProductDetails
