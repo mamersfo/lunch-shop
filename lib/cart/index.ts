@@ -7,9 +7,20 @@ export const send = async (payload: any) => {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
-    const { data, error: fetchError } = await supabase
-        .from('sessions')
-        .select('cart')
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser()
+
+    if (userError) {
+        throw userError
+    }
+
+    if (!user?.id) return
+
+    const { data: cart, error: fetchError } = await supabase
+        .from('carts')
+        .select('user_id, state')
         .maybeSingle()
 
     if (fetchError) {
@@ -18,10 +29,10 @@ export const send = async (payload: any) => {
 
     let actor: any
 
-    if (data?.cart) {
+    if (cart?.state) {
         try {
             actor = createActor(cartMachine, {
-                state: data.cart,
+                state: cart.state,
             })
         } catch (e) {
             throw new Error(
@@ -43,12 +54,10 @@ export const send = async (payload: any) => {
             actorError = error
         },
         async complete() {
-            const cart = actor.getPersistedState()
-            console.log('saving:', cart)
-
-            const { data, error: upsertError } = await supabase
-                .from('sessions')
-                .upsert({ cart })
+            const { error: upsertError } = await supabase.from('carts').upsert({
+                user_id: user.id,
+                state: actor.getPersistedState(),
+            })
 
             if (upsertError) {
                 actorError = upsertError

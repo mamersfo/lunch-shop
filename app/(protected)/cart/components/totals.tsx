@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { Amount, CartState } from '@/app/components'
 import { LineItem } from '@/types'
 import { State } from '@/lib/cart/machine'

@@ -34,6 +34,28 @@ export interface Database {
   }
   public: {
     Tables: {
+      carts: {
+        Row: {
+          state: Json | null
+          user_id: string
+        }
+        Insert: {
+          state?: Json | null
+          user_id: string
+        }
+        Update: {
+          state?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "carts_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       line_items: {
         Row: {
           order_id: number
@@ -105,7 +127,14 @@ export interface Database {
           updated_at?: string | null
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       products: {
         Row: {
@@ -134,21 +163,6 @@ export interface Database {
           short_description?: string | null
           slug?: string
           tags?: string[] | null
-        }
-        Relationships: []
-      }
-      sessions: {
-        Row: {
-          cart: Json | null
-          id: string
-        }
-        Insert: {
-          cart?: Json | null
-          id?: string
-        }
-        Update: {
-          cart?: Json | null
-          id?: string
         }
         Relationships: []
       }

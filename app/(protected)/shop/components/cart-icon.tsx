@@ -1,23 +1,20 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { type Session } from '@/types'
+import { type Cart } from '@/types'
 import { type Context } from '@/lib/cart/machine'
 
 export default async function CartIcon({ href }: { href: string }) {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
-    const { data, error } = await supabase
-        .from('sessions')
-        .select()
-        .maybeSingle()
+    const { data, error } = await supabase.from('carts').select().maybeSingle()
 
     if (error) {
         throw new Error(error.message)
     }
 
-    const session = data as Session
-    const cart = session?.cart as {
+    const session = data as Cart
+    const cart = session?.state as {
         context: Context
     }
 

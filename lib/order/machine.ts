@@ -1,4 +1,4 @@
-import { assign, createMachine } from 'xstate'
+import { createMachine } from 'xstate'
 
 export type Context = {
     userId: string

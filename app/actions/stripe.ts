@@ -5,7 +5,6 @@ import { createClient } from '@/utils/supabase/server'
 import { type Stripe } from 'stripe'
 import { stripe } from '@/utils/stripe'
 import { redirect } from 'next/navigation'
-import { type Session } from '@/types'
 import { type State } from '@/lib/cart/machine'
 
 export async function createCheckoutSession(data: FormData): Promise<void> {
@@ -21,17 +20,16 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
         throw userError
     }
 
-    const { data: sessionData, error: sessionError } = await supabase
-        .from('sessions')
-        .select('id, cart')
+    const { data: cart, error: cartsError } = await supabase
+        .from('carts')
+        .select('user_id, state')
         .maybeSingle()
 
-    if (sessionError) {
-        throw sessionError
+    if (cartsError) {
+        throw cartsError
     }
 
-    const session = sessionData as Session
-    const state = session?.cart as State
+    const state = cart?.state as State
 
     if (!(state?.context.products.length > 0)) {
         throw new Error('nothing in cart')
@@ -78,7 +76,7 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
 
     const checkoutSession: Stripe.Checkout.Session =
         await stripe.checkout.sessions.create({
-            client_reference_id: session.id,
+            client_reference_id: cart?.user_id,
             customer_email: user?.email,
             metadata: {
                 order_id,

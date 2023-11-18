@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
-import { type LineItem, Session } from '@/types'
+import { type LineItem, Cart } from '@/types'
 import { Totals, Viewing } from './components'
 import { type State } from '@/lib/cart/machine'
 
@@ -8,17 +8,17 @@ export default async function Page() {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
-    const { data, error: sessionsError } = await supabase
-        .from('sessions')
-        .select('cart')
+    const { data, error: cartsError } = await supabase
+        .from('carts')
+        .select('state')
         .maybeSingle()
 
-    if (sessionsError) {
-        throw sessionsError
+    if (cartsError) {
+        throw cartsError
     }
 
-    const session = data as Session
-    const state = session?.cart as State
+    const cart = data as Cart
+    const state = cart?.state as State
 
     let lineItems: LineItem[] = []
 
