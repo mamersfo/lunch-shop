@@ -14,7 +14,7 @@ export default function Debug({ data }: any) {
                     type='checkbox'
                     className='toggle'
                     checked={debug}
-                    onClick={() => setDebug(!debug)}
+                    onChange={() => setDebug(!debug)}
                 />
             </div>
             {debug && (

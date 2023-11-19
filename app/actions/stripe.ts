@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/server'
 import { type Stripe } from 'stripe'
 import { stripe } from '@/utils/stripe'
 import { redirect } from 'next/navigation'
-import { type State } from '@/lib/cart/machine'
+import { type State, LineItem } from '@/lib/cart/machine'
 
 export async function createCheckoutSession(data: FormData): Promise<void> {
     const cookieStore = cookies()
@@ -22,7 +22,7 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
 
     const { data: cart, error: cartsError } = await supabase
         .from('carts')
-        .select('user_id, state')
+        .select('state')
         .maybeSingle()
 
     if (cartsError) {
@@ -31,35 +31,20 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
 
     const state = cart?.state as State
 
-    if (!(state?.context.products.length > 0)) {
+    if (!(state?.context.itemCount > 0)) {
         throw new Error('nothing in cart')
     }
 
-    const bag = state.context.products.reduce(
-        (bag: Record<string, number>, slug: string) =>
-            Object.assign(bag, { [slug]: (bag[slug] || 0) + 1 }),
-        {}
-    )
-
-    const { data: products, error: productsError } = await supabase
-        .from('products')
-        .select('slug, name, price')
-        .in('slug', Object.keys(bag))
-
-    if (productsError) {
-        throw productsError
-    }
-
     let line_items: Stripe.Checkout.SessionCreateParams.LineItem[] =
-        products?.map((p: any) => {
+        state.context.lineItems?.map((li: LineItem) => {
             return {
-                quantity: bag[p.slug],
+                quantity: li.quantity,
                 price_data: {
                     currency: 'eur',
                     product_data: {
-                        name: p.name,
+                        name: li.name,
                     },
-                    unit_amount: p.price,
+                    unit_amount: li.price,
                 },
             }
         })
@@ -76,8 +61,8 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
 
     const checkoutSession: Stripe.Checkout.Session =
         await stripe.checkout.sessions.create({
-            client_reference_id: cart?.user_id,
-            customer_email: user?.email,
+            client_reference_id: user!.id,
+            customer_email: user!.email,
             metadata: {
                 order_id,
             },
@@ -94,6 +79,5 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
             cancel_url: `${origin}/cart?session_id={CHECKOUT_SESSION_ID}`,
         })
 
-    // revalidatePath('/cart')
     redirect(checkoutSession.url as string)
 }
