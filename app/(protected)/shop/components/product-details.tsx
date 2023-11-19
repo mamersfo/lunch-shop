@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { revalidatePath } from 'next/cache'
 import { type Product } from '@/types'
 import { send } from '@/lib/cart'
-import { Amount, CartState } from '@/app/components'
+import { Amount } from '@/app/components'
 import PhotoCredits from './photo-credits'
 
 export default function ProductDetails(product: Product) {
@@ -56,7 +56,6 @@ export default function ProductDetails(product: Product) {
                 <Link href='/shop' className='mt-4 text-sm underline'>
                     Back to shop
                 </Link>
-                <CartState />
             </div>
         </div>
     )

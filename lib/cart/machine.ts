@@ -10,6 +10,7 @@ export type LineItem = {
 export type Context = {
     lineItems: LineItem[]
     itemCount: number
+    itemSum: number
 }
 
 export type State = {
@@ -35,6 +36,7 @@ export const cartMachine = createMachine(
         context: {
             lineItems: [],
             itemCount: 0,
+            itemSum: 0,
         },
         initial: 'shopping',
         states: {
@@ -42,11 +44,11 @@ export const cartMachine = createMachine(
                 on: {
                     addToCart: {
                         target: 'shopping',
-                        actions: ['add', 'count'],
+                        actions: ['add', 'count', 'sum'],
                     },
                     removeFromCart: {
                         target: 'shopping',
-                        actions: ['remove', 'count'],
+                        actions: ['remove', 'count', 'sum'],
                     },
                 },
             },
@@ -91,6 +93,13 @@ export const cartMachine = createMachine(
             count: assign({
                 itemCount: ({ context }) =>
                     context.lineItems.reduce((m, n) => m + n.quantity, 0),
+            }),
+            sum: assign({
+                itemSum: ({ context }) =>
+                    context.lineItems.reduce(
+                        (m, n) => m + n.quantity * n.price,
+                        0
+                    ),
             }),
         },
     }

@@ -3,6 +3,6 @@ import Header from './header'
 import Logout from './logout'
 import Protected from './protected'
 import QueryProvider from './query-provider'
-import CartState from './cart-state'
+import Debug from './debug'
 
-export { Amount, Header, Logout, Protected, QueryProvider, CartState }
+export { Amount, Header, Logout, Protected, QueryProvider, Debug }
