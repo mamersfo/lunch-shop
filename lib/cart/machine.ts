@@ -32,6 +32,7 @@ export const cartMachine = createMachine(
                       price: number
                   }
                 | { type: 'removeFromCart'; slug: string }
+                | { type: 'resetCart' }
         },
         context: {
             lineItems: [],
@@ -49,6 +50,10 @@ export const cartMachine = createMachine(
                     removeFromCart: {
                         target: 'shopping',
                         actions: ['remove', 'count', 'sum'],
+                    },
+                    resetCart: {
+                        target: 'shopping',
+                        actions: ['reset'],
                     },
                 },
             },
@@ -87,8 +92,15 @@ export const cartMachine = createMachine(
                 },
             }),
             remove: assign({
-                lineItems: ({ context, event }) =>
-                    context.lineItems.filter((li) => li.slug !== event.slug),
+                lineItems: ({ context, event }) => {
+                    if (event.type === 'removeFromCart') {
+                        return context.lineItems.filter(
+                            (li) => li.slug !== event.slug
+                        )
+                    }
+
+                    return context.lineItems
+                },
             }),
             count: assign({
                 itemCount: ({ context }) =>
@@ -100,6 +112,11 @@ export const cartMachine = createMachine(
                         (m, n) => m + n.quantity * n.price,
                         0
                     ),
+            }),
+            reset: assign({
+                lineItems: [],
+                itemCount: 0,
+                itemSum: 0,
             }),
         },
     }

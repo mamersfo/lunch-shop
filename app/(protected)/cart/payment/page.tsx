@@ -1,7 +1,7 @@
 import type { Stripe } from 'stripe'
 import { stripe } from '@/utils/stripe'
 import { send } from '@/lib/cart'
-import { CartState } from '@/app/components'
+import { Debug } from '@/app/components'
 import {
     Delivery,
     Heading,
@@ -29,7 +29,7 @@ export default async function Page({
         (checkoutSession?.payment_intent as Stripe.PaymentIntent)?.status ===
         'succeeded'
     ) {
-        send({ type: 'paymentSucceeded' })
+        send({ type: 'resetCart' })
 
         return (
             <div className='flex flex-col gap-4 mt-8'>
@@ -43,6 +43,9 @@ export default async function Page({
                                 shipping_cost={checkoutSession.shipping_cost}
                             />
                         </div>
+                        <Debug
+                            data={JSON.parse(JSON.stringify(checkoutSession))}
+                        />
                     </div>
                     <div className='flex flex-col gap-4 w-1/3'>
                         <>
@@ -66,7 +69,6 @@ export default async function Page({
                         </>
                     </div>
                 </div>
-                <Debug {...checkoutSession} />
             </div>
         )
     }
@@ -76,19 +78,7 @@ export default async function Page({
             <div className='text-lg font-semibold text-center'>
                 Payment failed
             </div>
-            <CartState />
-            <Debug {...checkoutSession} />
-        </div>
-    )
-}
-
-const Debug = (checkoutSession: Stripe.Checkout.Session) => {
-    const paymentIntent = checkoutSession.payment_intent as Stripe.PaymentIntent
-    return (
-        <div className='prose mt-8'>
-            <pre className='text-sm'>
-                {JSON.stringify(checkoutSession, null, 2)}
-            </pre>
+            <Debug data={JSON.parse(JSON.stringify(checkoutSession))} />
         </div>
     )
 }

@@ -1,4 +1,3 @@
-import { Amount } from '@/app/components'
 import { formatRelative, fromUnixTime } from 'date-fns'
 import { enUS } from 'date-fns/locale'
 
