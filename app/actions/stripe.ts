@@ -35,6 +35,27 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
         throw new Error('nothing in cart')
     }
 
+    const cart_id = state.context.cartId as string
+    const order_id = `DSS-${cart_id
+        .substring(0, cart_id.indexOf('-'))
+        .toUpperCase()}`
+
+    const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .upsert({
+            id: cart_id,
+            user_id: user!.id,
+            order_id,
+            order_amount: state.context.itemSum,
+            line_items: state.context.lineItems,
+        })
+        .select()
+        .maybeSingle()
+
+    if (orderError) {
+        throw orderError
+    }
+
     let line_items: Stripe.Checkout.SessionCreateParams.LineItem[] =
         state.context.lineItems?.map((li: LineItem) => {
             return {
@@ -49,23 +70,12 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
             }
         })
 
-    const { data: order_id, error: orderError } = await supabase.rpc(
-        'new_order_id'
-    )
-
-    if (orderError) {
-        throw orderError
-    }
-
     const origin = headers().get('origin')
 
     const checkoutSession: Stripe.Checkout.Session =
         await stripe.checkout.sessions.create({
-            client_reference_id: user!.id,
+            client_reference_id: cart_id,
             customer_email: user!.email,
-            metadata: {
-                order_id,
-            },
             line_items,
             mode: 'payment',
             shipping_options: [

@@ -56,85 +56,53 @@ export interface Database {
           }
         ]
       }
-      line_items: {
-        Row: {
-          order_id: number
-          price: number
-          product_id: number
-          quantity: number
-          user_id: string
-        }
-        Insert: {
-          order_id: number
-          price: number
-          product_id: number
-          quantity: number
-          user_id: string
-        }
-        Update: {
-          order_id?: number
-          price?: number
-          product_id?: number
-          quantity?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "line_items_order_id_fkey"
-            columns: ["order_id"]
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "line_items_product_id_fkey"
-            columns: ["product_id"]
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "line_items_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       orders: {
         Row: {
           created_at: string
-          id: number
-          order_id: string | null
+          id: string
+          line_items: Json | null
+          order_amount: number | null
+          order_id: string
+          ordered_date: string | null
+          payment_method: string | null
+          payment_status: string
+          shipping_cost: number | null
+          shipping_details: Json | null
+          shipping_method: string | null
           state: Json | null
-          status: string | null
-          updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
-          id?: number
-          order_id?: string | null
+          id: string
+          line_items?: Json | null
+          order_amount?: number | null
+          order_id: string
+          ordered_date?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          shipping_cost?: number | null
+          shipping_details?: Json | null
+          shipping_method?: string | null
           state?: Json | null
-          status?: string | null
-          updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string
-          id?: number
-          order_id?: string | null
+          id?: string
+          line_items?: Json | null
+          order_amount?: number | null
+          order_id?: string
+          ordered_date?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          shipping_cost?: number | null
+          shipping_details?: Json | null
+          shipping_method?: string | null
           state?: Json | null
-          status?: string | null
-          updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "orders_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       products: {
         Row: {
@@ -171,10 +139,7 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      new_order_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

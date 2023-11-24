@@ -1,7 +1,5 @@
-import Delivery from './delivery'
-import Heading from './heading'
+import Shipping from './shipping'
 import Specification from './specification'
-import Order from './order'
 import PaymentMethod from './payment-method'
 
-export { Delivery, Heading, Specification, Order, PaymentMethod }
+export { Shipping, Specification, PaymentMethod }

@@ -1,13 +1,46 @@
 import Image from 'next/image'
 import { CreditCardIcon } from '@heroicons/react/24/outline'
+import type { Stripe } from 'stripe'
+
 import visaIcon from '@/public/icons8-visa.svg'
 import mastercardIcon from '@/public/icons8-mastercard.svg'
 import amexIcon from '@/public/icons8-american-express.svg'
 
-export default function PaymentMethod({ data }: any) {
-    let icon: any
+export default function PaymentMethod(paymentMethod: Stripe.PaymentMethod) {
+    return (
+        <table className='table'>
+            <tbody>
+                {paymentMethod.type === 'card' && (
+                    <tr>
+                        <td>Payment method</td>
+                        <td className='text-right'>
+                            <CreditCardIcon className='h-6 w-6' />
+                        </td>
+                    </tr>
+                )}
+                {paymentMethod.card && (
+                    <tr>
+                        <td>Card:</td>
+                        <td className='text-right flex flex-row gap-4 items-center'>
+                            <Image
+                                src={getIcon(paymentMethod.card.brand)}
+                                width={26}
+                                height={26}
+                                alt={paymentMethod.card.brand}
+                            />
+                            <span>ends with {paymentMethod.card.last4}</span>
+                        </td>
+                    </tr>
+                )}
+            </tbody>
+        </table>
+    )
+}
 
-    switch (data.payment_method.card.brand) {
+const getIcon = (card: string) => {
+    let icon
+
+    switch (card) {
         case 'amex':
             icon = amexIcon
             break
@@ -21,27 +54,5 @@ export default function PaymentMethod({ data }: any) {
             break
     }
 
-    return (
-        <table className='table'>
-            <tbody>
-                <tr>
-                    <td>Payment method</td>
-                    <td className='text-right'>
-                        <CreditCardIcon className='h-6 w-6' />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Card</td>
-                    <td className='text-right'>
-                        <Image
-                            src={icon}
-                            width={26}
-                            height={26}
-                            alt={data.payment_method.brand}
-                        />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    )
+    return icon
 }

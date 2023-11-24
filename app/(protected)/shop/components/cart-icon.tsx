@@ -36,7 +36,7 @@ export default async function CartIcon({ href }: { href: string }) {
                     />
                 </svg>
                 <span className='badge badge-sm indicator-item bg-red-500 text-white'>
-                    {cart?.context.itemCount}
+                    {cart?.context.itemCount || 0}
                 </span>
             </div>
         </a>

@@ -1,10 +1,10 @@
 import { Amount } from '@/app/components'
+import { Order } from '@/types'
+import { LineItem } from '@/lib/cart/machine'
 
-export default function Specification({
-    amount_total,
-    line_items,
-    shipping_cost,
-}: any) {
+export default function Specification({ order }: { order: Order }) {
+    const totalAmount = (order.order_amount || 0) + (order.shipping_cost || 0)
+
     return (
         <table className='table w-full'>
             <thead>
@@ -16,34 +16,32 @@ export default function Specification({
                 </tr>
             </thead>
             <tbody>
-                {line_items?.map((line_item: any, idx: number) => (
-                    <tr key={line_item.id}>
-                        <td className='w-1/4'>{line_item.description}</td>
-                        <td className='w-1/4 text-right'>
-                            <Amount value={line_item.price.unit_amount} />
-                        </td>
-                        <td className='w-1/4 text-right'>
-                            {line_item.quantity}
-                        </td>
-                        <td className='w-1/4 text-right'>
-                            <Amount value={line_item.amount_total} />
-                        </td>
-                    </tr>
-                ))}
+                {(order.line_items as LineItem[])?.map(
+                    (li: LineItem, idx: number) => (
+                        <tr key={`line-item-${idx}`}>
+                            <td className='w-1/4'>{li.name}</td>
+                            <td className='w-1/4 text-right'>
+                                <Amount value={li.price} />
+                            </td>
+                            <td className='w-1/4 text-right'>{li.quantity}</td>
+                            <td className='w-1/4 text-right'>
+                                <Amount value={li.price * li.quantity} />
+                            </td>
+                        </tr>
+                    )
+                )}
                 <tr key={'shipping-cost'}>
-                    <td className='w-1/4'>
-                        {shipping_cost.shipping_rate.display_name} delivery
-                    </td>
+                    <td className='w-1/4'>{order.shipping_method} delivery</td>
                     <td colSpan={2}></td>
                     <td className='w-1/4 text-right'>
-                        <Amount value={shipping_cost.amount_total} />
+                        <Amount value={order.shipping_cost} />
                     </td>
                 </tr>
                 <tr key={'shipping-cost'}>
                     <td className='w-1/4'>Total</td>
                     <td colSpan={2}></td>
                     <td className='w-1/4 text-right font-semibold'>
-                        <Amount value={amount_total} />
+                        <Amount value={totalAmount} />
                     </td>
                 </tr>
             </tbody>

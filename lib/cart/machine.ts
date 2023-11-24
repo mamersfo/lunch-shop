@@ -1,4 +1,5 @@
 import { assign, createMachine } from 'xstate'
+import { v4 as uuidv4 } from 'uuid'
 
 export type LineItem = {
     slug: string
@@ -8,6 +9,7 @@ export type LineItem = {
 }
 
 export type Context = {
+    cartId: string
     lineItems: LineItem[]
     itemCount: number
     itemSum: number
@@ -35,6 +37,7 @@ export const cartMachine = createMachine(
                 | { type: 'resetCart' }
         },
         context: {
+            cartId: uuidv4(),
             lineItems: [],
             itemCount: 0,
             itemSum: 0,
@@ -114,6 +117,7 @@ export const cartMachine = createMachine(
                     ),
             }),
             reset: assign({
+                cartId: uuidv4(),
                 lineItems: [],
                 itemCount: 0,
                 itemSum: 0,
