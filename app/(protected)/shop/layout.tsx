@@ -1,4 +1,4 @@
-import { Header, Logout } from '@/app/components'
+import { Header, Logout, Profile } from '@/app/components'
 import { CartIcon } from './components'
 
 export default async function Layout({
@@ -10,7 +10,7 @@ export default async function Layout({
         <>
             <Header title='dogswagshop' href='/shop'>
                 <CartIcon href='/cart' />
-                <Logout />
+                <Profile />
             </Header>
             {children}
         </>
