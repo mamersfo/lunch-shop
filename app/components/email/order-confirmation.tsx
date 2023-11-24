@@ -10,12 +10,13 @@ import {
     Tailwind,
     Text,
 } from '@react-email/components'
+import { type Order } from '@/types'
 
 const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : ''
 
-export function OrderConfirmationEmail(props: any) {
+export function OrderConfirmationEmail({ order }: { order: Order }) {
     return (
         <Tailwind
             config={{
@@ -37,12 +38,19 @@ export function OrderConfirmationEmail(props: any) {
                         <Text className='font-sans text-gray-400 text-md'>
                             Thanks for buying at dogswagshop.
                         </Text>
-                        <Img
+                        <Link
+                            href={`http://localhost:3000/shop/orders/${order.id}`}
+                            target='_blank'
+                            className='font-sans text-gray-500 text-sm underline'
+                        >
+                            View your order
+                        </Link>
+                        {/* <Img
                             src={`${baseUrl}/static/paw.svg`}
                             width='32'
                             height='32'
                             alt='dogswagshop logo'
-                        />
+                        /> */}
                         <Text className='font-sans text-gray-500 text-sm'>
                             <Link
                                 href='https://dogswagshop.com'

@@ -7,7 +7,7 @@ export default async function Layout({
 }) {
     return (
         <>
-            <Header title='dogswagshop admin'>
+            <Header title='dogswagshop admin' href='admin'>
                 <Logout />
             </Header>
             {children}

@@ -85,8 +85,8 @@ export async function createCheckoutSession(data: FormData): Promise<void> {
             shipping_address_collection: {
                 allowed_countries: ['NL'],
             },
-            success_url: `${origin}/cart/payment?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${origin}/cart?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: `${origin}/shop/cart/payment?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/shop/cart?session_id={CHECKOUT_SESSION_ID}`,
         })
 
     redirect(checkoutSession.url as string)

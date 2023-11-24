@@ -1,4 +1,4 @@
-import { Amount } from '@/app/components'
+import { Amount } from '..'
 import { Order } from '@/types'
 import { LineItem } from '@/lib/cart/machine'
 

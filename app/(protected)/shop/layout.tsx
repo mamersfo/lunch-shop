@@ -9,7 +9,7 @@ export default async function Layout({
     return (
         <>
             <Header title='dogswagshop' href='/shop'>
-                <CartIcon href='/cart' />
+                <CartIcon href='/shop/cart' />
                 <Profile />
             </Header>
             {children}

@@ -2,7 +2,16 @@ import { client } from '@/trigger'
 import { Stripe } from '@trigger.dev/stripe'
 import { Supabase } from '@trigger.dev/supabase'
 import { Database } from '@/types/supabase'
+import { SendGrid } from '@trigger.dev/sendgrid'
 import { retrieveCheckoutSession } from '@/utils/stripe'
+import { render } from '@react-email/render'
+import { OrderConfirmationEmail } from '@/app/components/email'
+import { createElement } from 'react'
+
+const sendgrid = new SendGrid({
+    id: 'sendgrid',
+    apiKey: process.env.SENDGRID_API_KEY!,
+})
 
 const stripe = new Stripe({
     id: 'stripe',
@@ -16,13 +25,14 @@ const supabase = new Supabase<Database>({
 })
 
 client.defineJob({
-    id: 'stripe-checkout',
-    name: 'Stripe Checkout Test 1',
+    id: 'stripe-checkout-session-completed',
+    name: 'Stripe Checkout Session Completed',
     version: '0.1.0',
     trigger: stripe.onCheckoutSessionCompleted(),
     integrations: {
         stripe,
         supabase,
+        sendgrid,
     },
     run: async (payload, io, ctx) => {
         const checkoutSession = await io.runTask(
@@ -36,6 +46,8 @@ client.defineJob({
             }
         )
 
+        console.log('checkoutSession:', checkoutSession)
+
         const shippingCost = checkoutSession.shipping_cost as any
         // console.log('shipping_cost:', checkoutSession.shipping_cost)
 
@@ -43,7 +55,7 @@ client.defineJob({
         // console.log('payment_intent:', checkoutSession.payment_intent)
 
         const { data: order, error: orderError } = await io.supabase.runTask(
-            'create-order',
+            'update-order',
             async (db) => {
                 return db
                     .from('orders')
@@ -64,5 +76,23 @@ client.defineJob({
                 icon: 'supabase',
             }
         )
+
+        if (order) {
+            const html = await io.runTask('generate-email', async () =>
+                render(createElement(OrderConfirmationEmail, { order }), {
+                    pretty: true,
+                })
+            )
+
+            await io.sendgrid.sendEmail(
+                `Confirmation email for order ${order?.order_id}`,
+                {
+                    to: checkoutSession.customer_email,
+                    from: 'Martin van Amersfoorth <martin.van.amersfoorth@finalist.nl>',
+                    subject: `Your dogswagshop order ${order?.order_id} has been processed`,
+                    html,
+                }
+            )
+        }
     },
 })
